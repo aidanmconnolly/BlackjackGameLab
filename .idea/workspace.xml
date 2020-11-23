@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9518b8d3-9305-4c5f-b331-76a5ba27c6ea" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/blackjack.html" afterPath="$PROJECT_DIR$/blackjack.html" />
-      <change beforePath="$PROJECT_DIR$/blackjackclient.js" afterPath="$PROJECT_DIR$/blackjackclient.js" />
       <change beforePath="$PROJECT_DIR$/blackjackserver.js" afterPath="$PROJECT_DIR$/blackjackserver.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -22,8 +20,8 @@
       <file leaf-file-name="blackjack.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/blackjack.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="9" lean-forward="true" selection-start-line="17" selection-start-column="9" selection-end-line="17" selection-end-column="9" />
+            <state relative-caret-position="315">
+              <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -42,12 +40,12 @@
       <file leaf-file-name="blackjackserver.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/blackjackserver.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="41">
-              <caret line="165" column="44" lean-forward="false" selection-start-line="165" selection-start-column="44" selection-end-line="165" selection-end-column="44" />
+            <state relative-caret-position="-130">
+              <caret line="90" column="34" lean-forward="true" selection-start-line="90" selection-start-column="34" selection-end-line="90" selection-end-column="34" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
-                <marker date="1606099712673" expanded="true" signature="621:932" ph="{...}" />
-                <marker date="1606099712673" expanded="true" signature="976:993" ph="{...}" />
+                <marker date="1606154815961" expanded="true" signature="621:932" ph="{...}" />
+                <marker date="1606154815961" expanded="true" signature="976:993" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -82,10 +80,10 @@
   <component name="NodeModulesDirectoryManager">
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="y" value="23" />
+  <component name="ProjectFrameBounds">
+    <option name="y" value="25" />
     <option name="width" value="1440" />
-    <option name="height" value="827" />
+    <option name="height" value="819" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -164,15 +162,15 @@
       <option name="presentableId" value="Default" />
       <updated>1606092816844</updated>
       <workItem from="1606092818108" duration="285000" />
-      <workItem from="1606093149930" duration="2016000" />
+      <workItem from="1606093149930" duration="3102000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2301000" />
+    <option name="totallyTimeSpent" value="3387000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="25" width="1440" height="819" extended-state="6" />
+    <frame x="0" y="25" width="1440" height="819" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -227,8 +225,8 @@
           <caret line="166" column="13" lean-forward="true" selection-start-line="166" selection-start-column="13" selection-end-line="166" selection-end-column="13" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1606099712673" expanded="true" signature="621:932" ph="{...}" />
-            <marker date="1606099712673" expanded="true" signature="976:993" ph="{...}" />
+            <marker date="1606154815961" expanded="true" signature="621:932" ph="{...}" />
+            <marker date="1606154815961" expanded="true" signature="976:993" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -251,20 +249,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/blackjack.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="9" lean-forward="true" selection-start-line="17" selection-start-column="9" selection-end-line="17" selection-end-column="9" />
+        <state relative-caret-position="315">
+          <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/blackjackserver.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="41">
-          <caret line="165" column="44" lean-forward="false" selection-start-line="165" selection-start-column="44" selection-end-line="165" selection-end-column="44" />
+        <state relative-caret-position="-130">
+          <caret line="90" column="34" lean-forward="true" selection-start-line="90" selection-start-column="34" selection-end-line="90" selection-end-column="34" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1606099712673" expanded="true" signature="621:932" ph="{...}" />
-            <marker date="1606099712673" expanded="true" signature="976:993" ph="{...}" />
+            <marker date="1606154815961" expanded="true" signature="621:932" ph="{...}" />
+            <marker date="1606154815961" expanded="true" signature="976:993" ph="{...}" />
           </folding>
         </state>
       </provider>
