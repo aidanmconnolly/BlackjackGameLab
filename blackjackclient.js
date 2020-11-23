@@ -7,8 +7,19 @@ const serverTextField = document.querySelector('#serverIp');
 const hitButton = document.querySelector('#hit');
 const stayButton = document.querySelector('#stay');
 const playAgainButton = document.querySelector('#playAgain');
+const image1 = document.querySelector('#image1');
+const image2 = document.querySelector('#image2');
+const image3 = document.querySelector('#image3');
+const image4 = document.querySelector('#image4');
+const image5 = document.querySelector('#image5');
+const image6 = document.querySelector('#image6');
 
-
+image1.style.display = 'none';
+image2.style.display = 'none';
+image3.style.display = 'none';
+image4.style.display = 'none';
+image5.style.display = 'none';
+image6.style.display = 'none';
 hitButton.style.display = 'none';
 stayButton.style.display = 'none';
 playAgainButton.style.display = 'none';
@@ -57,6 +68,19 @@ function leaveGame(message) {
     leaveButton.style.display = 'none';
 }
 
+function showCards(stringOfCards) {
+    images = [image1, image2, image3, image4, image5, image6];
+    for(i = 0; i < stringOfCards.length; i++) {
+        images[i].src = "Cards/JPEG/" + stringOfCards[i].trim() + ".jpg";
+        images[i].style.display = 'inline';
+    }
+    //image1.
+    //image1.style.display = 'inline';
+    //image.textContent = stringOfCards[0];
+
+    //image.textContent = stringOfCards;
+}
+
 function processCommand(command) {
     if(!gameOver){
         if (command.startsWith('WELCOME')) {
@@ -85,6 +109,9 @@ function processCommand(command) {
             hitButton.style.display = 'none';
             stayButton.style.display = 'none';
             playAgainButton.style.display = 'inline';
+        }
+        else if(command.startsWith('CARDS')) {
+            showCards(command.substring(5).split(","));
         }
         else {
             messageArea.textContent = command;
