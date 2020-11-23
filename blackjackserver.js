@@ -71,31 +71,50 @@ class Game {
             a[i] = a[j];
             a[j] = x;
         }
-        console.log(a);
+        //console.log(a);
         return a;
     }
 
 
     move(hit, player) {
-        console.log(hit);
+        //console.log(hit);
         if (player !== this.currentPlayer) {
             throw new Error('Not your turn');
         } else if (!player.opponent) {
             throw new Error('You don’t have an opponent yet');
         }
 
+        let card;
+
         if (hit === 1) {
             let num = this.deck.pop();
+            card = num.toString();
+
+            if (num === 11) {
+                card = "Jack";
+            }
+            if (num === 12) {
+                card = "Queen";
+            }
+            if (num === 13) {
+                card = "King";
+            }
+            if (num === 1) {
+                card = "Ace";
+            }
+
             if(num > 10) {
                 num = 10;
             }
             player.num += num;
         }
 
-        console.log(player.num);
-        if(hit === 0) {
+        //console.log(player.num);
+        else if(hit === 0) {
             this.currentPlayer = this.currentPlayer.opponent;
         }
+
+        return card;
 
     }
 }
@@ -122,10 +141,10 @@ class Player {
                 socket.close();
             } else if (command === "HIT") {
                 try {
-                    game.move(1, this);
+                    let card = game.move(1, this);
                     //this.opponent.send(`OPPONENT_HIT`);
                     if (this.lost()) {
-                        this.send(`MESSAGE BUST Your number is now ${this.num}. Wait for your opponent to play.`);
+                        this.send(`MESSAGE BUST You got a ${card}. Your number is now ${this.num}. Wait for your opponent to play.`);
                         if(this.opponent.num !== 0) {
                             this.whoWon();
                         }
@@ -135,7 +154,7 @@ class Player {
                         }
                     }
                     else {
-                        this.send(`MESSAGE Your number is now ${this.num}`);
+                        this.send(`MESSAGE You got a ${card}. Your number is now ${this.num}`);
                     }
                 } catch (e) {
                     console.trace(e);
