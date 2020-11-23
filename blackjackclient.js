@@ -7,6 +7,7 @@ const serverTextField = document.querySelector('#serverIp');
 const hitButton = document.querySelector('#hit');
 const stayButton = document.querySelector('#stay');
 
+
 hitButton.style.display = 'none';
 stayButton.style.display = 'none';
 
@@ -50,24 +51,38 @@ function leaveGame(message) {
 }
 
 function processCommand(command) {
-    if (command.startsWith('WELCOME')) {
-        mark = command[8];
-        opponentMark = mark === 'X' ? 'O' : 'X';
-    } else if (command.startsWith('VALID_MOVE')) {
-        square(command.substring(11)).textContent = mark;
-        messageArea.textContent = 'Valid move, please wait';
-    } else if (command.startsWith('OPPONENT_MOVED')) {
-        square(command.substring(15)).textContent = opponentMark;
-        messageArea.textContent = 'Opponent moved, your turn';
-    } else if (command.startsWith('MESSAGE')) {
-        messageArea.textContent = command.substring(8);
-    } else if (command.startsWith('VICTORY')) {
-        leaveGame('WINNER WINNER');
-    } else if (command.startsWith('DEFEAT')) {
-        leaveGame('Oh sorry you lost');
-    } else if (command.startsWith('TIE')) {
-        leaveGame('Tie game so boring');
-    } else if (command.startsWith('OTHER_PLAYER_LEFT')) {
-        leaveGame(!gameOver ? 'Woah your opponent bailed' : '');
+    if(!gameOver){
+        if (command.startsWith('WELCOME')) {
+            mark = command[8];
+            opponentMark = mark === 'X' ? 'O' : 'X';
+        } else if (command.startsWith('VALID_MOVE')) {
+            square(command.substring(11)).textContent = mark;
+            messageArea.textContent = 'Valid move, please wait';
+        } else if (command.startsWith('OPPONENT_MOVED')) {
+            square(command.substring(15)).textContent = opponentMark;
+            messageArea.textContent = 'Opponent moved, your turn';
+        } else if (command.startsWith('MESSAGE')) {
+            messageArea.textContent = command.substring(8);
+        } else if (command.startsWith('VICTORY')) {
+            leaveGame('WINNER WINNER');
+        } else if (command.startsWith('DEFEAT')) {
+            leaveGame('Oh sorry you lost');
+        } else if (command.startsWith('TIE')) {
+            leaveGame('Tie game so boring');
+        } else if (command.startsWith('OTHER_PLAYER_LEFT')) {
+            leaveGame(!gameOver ? 'Woah your opponent bailed' : '');
+        }
+        else if(command.startsWith('YOU ')) {
+            messageArea.textContent = command;
+            gameOver = true;
+        }
+        else {
+            messageArea.textContent = command;
+        }
     }
+
+    else if(gameOver){
+
+    }
+
 }

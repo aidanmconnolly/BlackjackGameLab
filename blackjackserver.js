@@ -67,6 +67,7 @@ class Game {
             a[i] = a[j];
             a[j] = x;
         }
+        console.log(a);
         return a;
     }
 
@@ -80,7 +81,7 @@ class Game {
         }
 
         if (hit === 1) {
-            let num = this.deck.shift;
+            let num = this.deck.pop();
             if(num > 10) {
                 num = 10;
             }
@@ -96,8 +97,9 @@ class Game {
 }
 
 class Player {
-    constructor(game, socket, mark, num) {
-        Object.assign(this, { game, socket, mark, num });
+    constructor(game, socket, mark) {
+        Object.assign(this, { game, socket, mark});
+        this.num = 0;
         this.send(`WELCOME ${mark}`);
         if (mark === 'X') {
             game.currentPlayer = this;
@@ -117,13 +119,19 @@ class Player {
             } else if (command === "HIT") {
                 try {
                     game.move(1, this);
-                    this.send(`Your number is now ${this.num}`);
-                    this.opponent.send(`OPPONENT_HIT`);
-                    if (this.winner()) {
-                        this.send('VICTORY');
-                        this.opponent.send('DEFEAT');
-                    } else if (this.lost()) {
-                        [this, this.opponent].forEach(p => p.send('TIE'));
+                    //this.opponent.send(`OPPONENT_HIT`);
+                    if (this.lost()) {
+                        this.send(`MESSAGE BUST Your number is now ${this.num}. Wait for your opponent to play.`);
+                        if(this.opponent.num !== 0) {
+                            this.whoWon();
+                        }
+                        else {
+                            game.move(0, this);
+                            this.opponent.send('MESSAGE YOUR TURN')
+                        }
+                    }
+                    else {
+                        this.send(`MESSAGE Your number is now ${this.num}`);
                     }
                 } catch (e) {
                     console.trace(e);
@@ -131,14 +139,13 @@ class Player {
                 }
             } else if (command === "STAY") {
                 try {
-                    game.move(0, this);
-                    this.send(`Your number is now ${this.num}`);
-                    this.opponent.send(`OPPONENT_STAY`);
-                    if (this.winner()) {
-                        this.send('VICTORY');
-                        this.opponent.send('DEFEAT');
-                    } else if (this.lost()) {
-                        [this, this.opponent].forEach(p => p.send('TIE'));
+                    if(this.opponent.num !== 0) {
+                        this.whoWon();
+                    }
+                    else {
+                        game.move(0, this);
+                        this.send(`MESSAGE Your number is now ${this.num}. Wait for your opponent to play.`);
+                        this.opponent.send(`MESSAGE YOUR TURN`);
                     }
                 } catch (e) {
                     console.trace(e);
@@ -148,15 +155,37 @@ class Player {
             }
         });
 
-
-
         socket.on('close', () => {
             try { this.opponent.send('OTHER_PLAYER_LEFT'); } catch (e) {}
         });
     }
 
-    winner() {
-        return this.num === 21;
+    whoWon(){
+        if (this.num > 21 && this.opponent.num > 21) {
+            this.send('YOU TIED, both players went over 21.');
+            this.opponent.send('YOU TIED, both players went over 21');
+        }
+        else if (this.num > 21) {
+            this.send(`YOU LOST! You went over 21 and your opponent got ${this.opponent.num}`);
+            this.opponent.send(`YOU WON! Your opponent went over 21 and you got ${this.opponent.num}`);
+        }
+        else if (this.opponent.num > 21) {
+            this.send(`YOU WON! Your opponent went over 21 and you got ${this.num}`);
+            this.opponent.send(`YOU LOST! You went over 21 and your opponent got ${this.num}`);
+        }
+        else if(this.num > this.opponent.num) {
+            this.send(`YOU WON! You got ${this.num} and your opponent got ${this.opponent.num}`);
+            this.opponent.send(`YOU LOST! You got ${this.opponent.num} and your opponent got ${this.num}`);
+        }
+        else if(this.num < this.opponent.num) {
+            this.send(`YOU LOST! You got ${this.num} and your opponent got ${this.opponent.num}`);
+            this.opponent.send(`YOU WON! You got ${this.opponent.num} and your opponent got ${this.num}`);
+        }
+
+        else if(this.num === this.opponent.num){
+            this.send('YOU TIED, both players have the same number.');
+            this.opponent.send('YOU TIED, both players have the same number.');
+        }
     }
 
     lost() {
