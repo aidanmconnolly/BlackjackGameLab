@@ -1,21 +1,4 @@
-// A server for a multi-player tic tac toe game. Loosely based on an example in
-// Deitel and Deitel’s “Java How to Program” book. For this project I created a
-// new application-level protocol called TTTP (for Tic Tac Toe Protocol), which
-// is entirely plain text. The messages of TTTP are:
-//
-// Client -> Server
-//     MOVE <n>
-//     QUIT
-//
-// Server -> Client
-//     WELCOME <char>
-//     VALID_MOVE
-//     OTHER_PLAYER_MOVED <n>
-//     OTHER_PLAYER_LEFT
-//     VICTORY
-//     DEFEAT
-//     TIE
-//     MESSAGE <text>
+
 
 const WebSocket = require('ws');
 
@@ -42,23 +25,25 @@ const server = new WebSocket.Server({ port: 58901 });
 })();
 
 class Game {
-    // A board has nine squares. Each square is either unowned or it is owned by a
-    // player. So we use a simple array of player references. If null, the corresponding
-    // square is unowned, otherwise the array cell stores a reference to the player that
-    // owns it.
     constructor() {
         this.deck = [];
         this.makeDeck();
     }
 
     makeDeck() {
+        //let card = 0;
+        //for(let i = 0; i < 52; i++) {
+        //   if (i % 4 === 0) {
+        //       card += 1
+        //   }
+        //   this.deck[i] = card;
+        //}
+        //this.shuffle(this.deck);
         let card = 0;
-        for(let i = 0; i < 52; i++) {
-            if (i % 4 === 0) {
-                card += 1
-            }
-            this.deck[i] = card;
-        }
+         for(let i = 0; i < 52; i++) {
+             this.deck[i] = card;
+             card++;
+         }
         this.shuffle(this.deck);
     }
 
@@ -71,13 +56,13 @@ class Game {
             a[i] = a[j];
             a[j] = x;
         }
-        //console.log(a);
+        console.log(a);
         return a;
     }
 
 
     move(hit, player) {
-        //console.log(hit);
+        console.log(hit);
         if (player !== this.currentPlayer) {
             throw new Error('Not your turn');
         } else if (!player.opponent) {
@@ -85,32 +70,33 @@ class Game {
         }
 
         let card;
-
         if (hit === 1) {
             let num = this.deck.pop();
+            //console.log("Num: ", num);
+            //let suit = Math.floor(num / 13);
+            player.cardsPlayed.push(num);
+            num = Math.floor(num % 13) + 1;
             card = num.toString();
-
-            if (num === 11) {
+            if(card === "1") {
+                card = "Ace";
+            } else if (card === "11") {
                 card = "Jack";
-            }
-            if (num === 12) {
+            } else if (card === "12") {
                 card = "Queen";
-            }
-            if (num === 13) {
+            } else if (card === "13") {
                 card = "King";
             }
-            if (num === 1) {
-                card = "Ace";
-            }
-
             if(num > 10) {
                 num = 10;
+                //console.log("NewNum: ", num);
             }
-            player.num += num;
-        }
 
-        //console.log(player.num);
-        else if(hit === 0) {
+            player.num += num;
+            player.showCards();
+        }
+        //console.log(player.cardsPlayed)
+        console.log(player.num);
+        if(hit === 0) {
             this.currentPlayer = this.currentPlayer.opponent;
         }
 
@@ -123,6 +109,7 @@ class Player {
     constructor(game, socket, mark) {
         Object.assign(this, { game, socket, mark});
         this.num = 0;
+        this.cardsPlayed = [];
         this.send(`WELCOME ${mark}`);
         if (mark === 'X') {
             game.currentPlayer = this;
@@ -184,6 +171,8 @@ class Player {
                 this.opponent.send("PLAY AGAIN");
                 this.send("MESSAGE Your move");
                 this.opponent.send('MESSAGE Your opponent will move first');
+                this.cardsPlayed = [];
+                this.opponent.cardsPlayed = [];
             }
         });
 
@@ -218,6 +207,10 @@ class Player {
             this.send('YOU TIED, both players have the same number.');
             this.opponent.send('YOU TIED, both players have the same number.');
         }
+    }
+
+    showCards() {
+        this.send("CARDS " + this.cardsPlayed);
     }
 
     lost() {
