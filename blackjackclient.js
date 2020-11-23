@@ -6,16 +6,23 @@ const leaveButton = document.querySelector('#leave');
 const serverTextField = document.querySelector('#serverIp');
 const hitButton = document.querySelector('#hit');
 const stayButton = document.querySelector('#stay');
+const playAgainButton = document.querySelector('#playAgain');
 
 
 hitButton.style.display = 'none';
 stayButton.style.display = 'none';
+playAgainButton.style.display = 'none';
 
 
 joinButton.addEventListener('click', joinGame);
 leaveButton.addEventListener('click', () => leaveGame('Bye!'));
 hitButton.addEventListener('click', hit);
 stayButton.addEventListener('click', stay);
+playAgainButton.addEventListener('click', playAgain);
+
+function playAgain() {
+    socket.send("PLAY AGAIN");
+}
 
 function hit() {
     socket.send("HIT");
@@ -75,6 +82,9 @@ function processCommand(command) {
         else if(command.startsWith('YOU ')) {
             messageArea.textContent = command;
             gameOver = true;
+            hitButton.style.display = 'none';
+            stayButton.style.display = 'none';
+            playAgainButton.style.display = 'inline';
         }
         else {
             messageArea.textContent = command;
@@ -82,7 +92,12 @@ function processCommand(command) {
     }
 
     else if(gameOver){
-
+        if(command.startsWith('PLAY AGAIN')){
+            hitButton.style.display = 'inline';
+            stayButton.style.display = 'inline';
+            playAgainButton.style.display = 'none';
+            gameOver = false;
+        }
     }
 
 }

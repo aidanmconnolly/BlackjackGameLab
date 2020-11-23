@@ -48,6 +48,10 @@ class Game {
     // owns it.
     constructor() {
         this.deck = [];
+        this.makeDeck();
+    }
+
+    makeDeck() {
         let card = 0;
         for(let i = 0; i < 52; i++) {
             if (i % 4 === 0) {
@@ -127,7 +131,7 @@ class Player {
                         }
                         else {
                             game.move(0, this);
-                            this.opponent.send('MESSAGE YOUR TURN')
+                            this.opponent.send('MESSAGE Your move')
                         }
                     }
                     else {
@@ -145,13 +149,22 @@ class Player {
                     else {
                         game.move(0, this);
                         this.send(`MESSAGE Your number is now ${this.num}. Wait for your opponent to play.`);
-                        this.opponent.send(`MESSAGE YOUR TURN`);
+                        this.opponent.send(`MESSAGE Your move`);
                     }
                 } catch (e) {
                     console.trace(e);
                     this.send(`MESSAGE ${e.message}`);
                 }
-
+            }
+            else if (command === "PLAY AGAIN") {
+                this.num = 0;
+                this.opponent.num = 0;
+                game.makeDeck();
+                game.currentPlayer = this;
+                this.send("PLAY AGAIN");
+                this.opponent.send("PLAY AGAIN");
+                this.send("MESSAGE Your move");
+                this.opponent.send('MESSAGE Your opponent will move first');
             }
         });
 
