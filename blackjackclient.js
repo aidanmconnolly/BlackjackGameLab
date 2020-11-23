@@ -120,6 +120,12 @@ function processCommand(command) {
 
     else if(gameOver){
         if(command.startsWith('PLAY AGAIN')){
+            image1.style.display = 'none';
+            image2.style.display = 'none';
+            image3.style.display = 'none';
+            image4.style.display = 'none';
+            image5.style.display = 'none';
+            image6.style.display = 'none';
             hitButton.style.display = 'inline';
             stayButton.style.display = 'inline';
             playAgainButton.style.display = 'none';

@@ -1,21 +1,4 @@
-// A server for a multi-player tic tac toe game. Loosely based on an example in
-// Deitel and Deitel’s “Java How to Program” book. For this project I created a
-// new application-level protocol called TTTP (for Tic Tac Toe Protocol), which
-// is entirely plain text. The messages of TTTP are:
-//
-// Client -> Server
-//     MOVE <n>
-//     QUIT
-//
-// Server -> Client
-//     WELCOME <char>
-//     VALID_MOVE
-//     OTHER_PLAYER_MOVED <n>
-//     OTHER_PLAYER_LEFT
-//     VICTORY
-//     DEFEAT
-//     TIE
-//     MESSAGE <text>
+
 
 const WebSocket = require('ws');
 
@@ -42,10 +25,6 @@ const server = new WebSocket.Server({ port: 58901 });
 })();
 
 class Game {
-    // A board has nine squares. Each square is either unowned or it is owned by a
-    // player. So we use a simple array of player references. If null, the corresponding
-    // square is unowned, otherwise the array cell stores a reference to the player that
-    // owns it.
     constructor() {
         this.deck = [];
         this.makeDeck();
@@ -90,12 +69,23 @@ class Game {
             throw new Error('You don’t have an opponent yet');
         }
 
+        let card;
         if (hit === 1) {
             let num = this.deck.pop();
             //console.log("Num: ", num);
             //let suit = Math.floor(num / 13);
             player.cardsPlayed.push(num);
             num = Math.floor(num % 13) + 1;
+            card = num.toString();
+            if(card === "1") {
+                card = "Ace";
+            } else if (card === "11") {
+                card = "Jack";
+            } else if (card === "12") {
+                card = "Queen";
+            } else if (card === "13") {
+                card = "King";
+            }
             if(num > 10) {
                 num = 10;
                 //console.log("NewNum: ", num);
@@ -109,6 +99,8 @@ class Game {
         if(hit === 0) {
             this.currentPlayer = this.currentPlayer.opponent;
         }
+
+        return card;
 
     }
 }
@@ -136,10 +128,10 @@ class Player {
                 socket.close();
             } else if (command === "HIT") {
                 try {
-                    game.move(1, this);
+                    let card = game.move(1, this);
                     //this.opponent.send(`OPPONENT_HIT`);
                     if (this.lost()) {
-                        this.send(`MESSAGE BUST Your number is now ${this.num}. Wait for your opponent to play.`);
+                        this.send(`MESSAGE BUST You got a ${card}. Your number is now ${this.num}. Wait for your opponent to play.`);
                         if(this.opponent.num !== 0) {
                             this.whoWon();
                         }
@@ -149,7 +141,7 @@ class Player {
                         }
                     }
                     else {
-                        this.send(`MESSAGE Your number is now ${this.num}`);
+                        this.send(`MESSAGE You got a ${card}. Your number is now ${this.num}`);
                     }
                 } catch (e) {
                     console.trace(e);
@@ -179,6 +171,8 @@ class Player {
                 this.opponent.send("PLAY AGAIN");
                 this.send("MESSAGE Your move");
                 this.opponent.send('MESSAGE Your opponent will move first');
+                this.cardsPlayed = [];
+                this.opponent.cardsPlayed = [];
             }
         });
 
