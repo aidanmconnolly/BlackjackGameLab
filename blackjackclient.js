@@ -4,7 +4,10 @@ const square = location => document.querySelector(`#s${location}`);
 const joinButton = document.querySelector('#join');
 const leaveButton = document.querySelector('#leave');
 const serverTextField = document.querySelector('#serverIp');
+const roomKeyTextField = document.querySelector('#roomKey');
+const privateRoomKey = document.querySelector('#privateRoomKey');
 const hitButton = document.querySelector('#hit');
+const splitButton = document.querySelector('#split');
 const stayButton = document.querySelector('#stay');
 const playAgainButton = document.querySelector('#playAgain');
 const image1 = document.querySelector('#image1');
@@ -21,6 +24,7 @@ image4.style.display = 'none';
 image5.style.display = 'none';
 image6.style.display = 'none';
 hitButton.style.display = 'none';
+splitButton.style.display = 'none';
 stayButton.style.display = 'none';
 playAgainButton.style.display = 'none';
 
@@ -28,6 +32,7 @@ playAgainButton.style.display = 'none';
 joinButton.addEventListener('click', joinGame);
 leaveButton.addEventListener('click', () => leaveGame('Bye!'));
 hitButton.addEventListener('click', hit);
+splitButton.addEventListener('click', split);
 stayButton.addEventListener('click', stay);
 playAgainButton.addEventListener('click', playAgain);
 
@@ -37,6 +42,10 @@ function playAgain() {
 
 function hit() {
     socket.send("HIT");
+}
+
+function split() {
+    socket.send("SPLIT");
 }
 
 function stay() {
@@ -52,6 +61,8 @@ function joinGame() {
     socket.addEventListener('message', (event) => { processCommand(event.data); });
     document.querySelectorAll('section div').forEach(s => s.textContent = '');
     joinButton.style.display = 'none';
+    roomKeyTextField.style.display = 'none';
+    privateRoomKey.style.display = 'none';
     serverTextField.style.display = 'none';
     hitButton.style.display = 'inline';
     stayButton.style.display = 'inline';
@@ -82,10 +93,19 @@ function showCards(stringOfCards) {
 }
 
 function processCommand(command) {
-    if(!gameOver){
+    if(command.startsWith('REQUEST')) {
+        if(roomKeyTextField.value === '') {
+
+            socket.send('KEY:' + 'dsakfjhqlkjhfwqwryq9w239134kaddhf');
+        }
+        else {
+            socket.send('KEY:' + roomKeyTextField.value);
+        }
+    }
+    else if(!gameOver){
         if (command.startsWith('WELCOME')) {
             mark = command[8];
-            opponentMark = mark === 'X' ? 'O' : 'X';
+            opponentMark = mark === 0 ? 1 : 0;
         } else if (command.startsWith('VALID_MOVE')) {
             square(command.substring(11)).textContent = mark;
             messageArea.textContent = 'Valid move, please wait';
