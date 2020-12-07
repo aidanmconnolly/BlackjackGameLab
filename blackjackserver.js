@@ -29,17 +29,21 @@ var games = [];
     // up and played, and this variable immediately set back to null so the future
     // connections make new games.
     //let g = null;
-    let counter = 0;
-    let key = 0;
+    let key = null;
 
     server.on('connection', (ws, req) => {
         console.log('Connection from', req.connection.remoteAddress);
         
         //console.log("Key: ", key)
-        let tempPlayer = new Player(null, ws, 0, key);
-        let added = false;
+        //console.log(key)
+        /*let tempPlayer = */new Player(null, ws, 0, key);
+        //let added = false;
         getRoomKey(ws);
-        for(var i = 0; i < games.length; i++) {
+        //console.log
+        //tempPlayer.key = 
+        //tempPlayer.key = tempPlayer.getRoomKey2(ws);
+        //console.log("tempPlayer.key: " + tempPlayer.key);
+        /*for(var i = 0; i < games.length; i++) {
             if(games[i].key === tempPlayer.key && games[i].open) {
                 tempPlayer.mark = games[i].players.length;
                 tempPlayer.game = games[i];
@@ -52,7 +56,7 @@ var games = [];
             games.push(gamee);
             //gamee.addPlayer(tempPlayer)
             tempPlayer.game = gamee;
-        }
+        }*/
         //if(waitingPlayers.length === 0) {
         //    waitingPlayers.add
         //}
@@ -64,6 +68,7 @@ var games = [];
         //    game.playerO = new Player(game, ws, 'O');
         //    game = null;
         //}
+        console.log(games);
     });
     console.log('The Blackjack server is running...');
 })();
@@ -189,10 +194,26 @@ class Player {
                 game.move(1, this.opponent);
             }
             else*/ 
-            if(command.startsWith('KEY')) {
+            if(game === null && command.startsWith('KEY')) {
                 //console.log("GOOD");
-                console.log(command.substring(4));
+                //console.log(command.substring(4));
                 this.key = command.substring(4);
+                let added = false;
+                for(var i = 0; i < games.length; i++) {
+                    if(games[i].key === this.key && games[i].open) {
+                        this.mark = games[i].players.length;
+                        this.game = games[i];
+                        games[i].addPlayer(this);
+                        added = true;
+                    }
+                }
+                if(!added) {
+                    let gamee = new Game(this.key, this);
+                    games.push(gamee);
+                    //gamee.addPlayer(tempPlayer)
+                    this.game = gamee;
+                }
+                //console.log(this.key);
             }
             else if (command === 'QUIT') {
                 socket.close();
@@ -261,16 +282,6 @@ class Player {
                     }
                 }
                 this.game.turn = 0;
-                //this.num = 0;
-                //this.opponent.num = 0;
-                //game.makeDeck();
-                //game.currentPlayer = this;
-                //this.cardsPlayed = [];
-                //this.opponent.cardsPlayed = [];
-                //this.send("PLAY AGAIN");
-                //this.opponent.send("PLAY AGAIN");
-                //this.send("MESSAGE Your move");
-                //this.opponent.send('MESSAGE Your opponent will move first');
             }
         });
 
@@ -287,10 +298,6 @@ class Player {
     whoWon(){
         var allBusted = true;
         for(var i = 0; i < this.game.players.length; i++) {
-            //console.log(this.game.players.length);
-            //console.log(this.game.players[0]);
-            //console.log("--------------------");
-            //console.log(this.game.players[1]);
             if(this.game.players[i].num <= 21) {
                 allBusted = false;
             }
@@ -315,20 +322,6 @@ class Player {
             console.log('---------------');
             console.log(highestIndex);
             if(highestIndex.length > 1) {
-                /*var winner = false;
-                for(var i = 0; i < this.game.players.length; i++) {
-                    winner = false;
-                    for(var j = 0; j < highestIndex.length; j++) {
-                        if(i === highestIndex[j]) {
-                            this.game.players[i].send(`YOU TIED! You got ${highest}!`);
-                            winner = true;
-                        }
-                        break;
-                    }
-                    if(!winner) {
-                        this.game.players[i].send(`YOU LOST! You got ${this.game.players[i].num} and winning score was ${highest}`);
-                    }
-                }*/
                 for(var i = this.game.players.length-1; i >= 0; i--) {
                     if(i === highestIndex[highestIndex.length-1]) {
                         this.game.players[i].send(`YOU TIED! You got ${highest}!`);
@@ -349,47 +342,7 @@ class Player {
                     }
                 } 
             }
-
-            //var winner = false;
-            //for(var i = 0; i < this.game.players.length; i++) {
-            //    winner = false;
-            //    for(var j = 0; j < highestIndex.length; j++) {
-            //         if(i === highestIndex[j]) {
-            //             this.game.players[i].send(`YOU WON! You got ${highest}!`)
-            //             winner = true;
-            //         }
-            //     }
-            //     if(!winner) {
-            //         this.game.players[i].send(`YOU LOST! You got ${this.game.players[i].num} and winning score was ${highest}`);
-            //     }
-            // }
-            //return 'WINNER: ' + highestIndex;
         }
-        /*if (this.num > 21 && this.opponent.num > 21) {
-            this.send('YOU TIED, both players went over 21.');
-            this.opponent.send('YOU TIED, both players went over 21');
-        }
-        else if (this.num > 21) {
-            this.send(`YOU LOST! You went over 21 and your opponent got ${this.opponent.num}`);
-            this.opponent.send(`YOU WON! Your opponent went over 21 and you got ${this.opponent.num}`);
-        }
-        else if (this.opponent.num > 21) {
-            this.send(`YOU WON! Your opponent went over 21 and you got ${this.num}`);
-            this.opponent.send(`YOU LOST! You went over 21 and your opponent got ${this.num}`);
-        }
-        else if(this.num > this.opponent.num) {
-            this.send(`YOU WON! You got ${this.num} and your opponent got ${this.opponent.num}`);
-            this.opponent.send(`YOU LOST! You got ${this.opponent.num} and your opponent got ${this.num}`);
-        }
-        else if(this.num < this.opponent.num) {
-            this.send(`YOU LOST! You got ${this.num} and your opponent got ${this.opponent.num}`);
-            this.opponent.send(`YOU WON! You got ${this.opponent.num} and your opponent got ${this.num}`);
-        }
-
-        else if(this.num === this.opponent.num){
-            this.send('YOU TIED, both players have the same number.');
-            this.opponent.send('YOU TIED, both players have the same number.');
-        }*/
     }
 
     showCards() {
@@ -407,4 +360,17 @@ class Player {
             console.error(e);
         }
     }
+
+    /*getRoomKey2(socket) {
+        let message = 'REQUEST RK';
+        while(this.key === null) {
+            //console.log("key:" + this.key);
+            try {
+                socket.send(`${message}\n`);
+            } catch (e) {
+            console.error(e);
+            }
+        }
+        return this.key;
+    }*/
 }

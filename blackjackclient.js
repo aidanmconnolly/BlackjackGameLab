@@ -95,7 +95,6 @@ function showCards(stringOfCards) {
 function processCommand(command) {
     if(command.startsWith('REQUEST')) {
         if(roomKeyTextField.value === '') {
-
             socket.send('KEY:' + 'dsakfjhqlkjhfwqwryq9w239134kaddhf');
         }
         else {
