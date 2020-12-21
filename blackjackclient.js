@@ -121,6 +121,8 @@ function processCommand(command) {
             leaveGame('Tie game so boring');
         } else if (command.startsWith('OTHER_PLAYER_LEFT')) {
             leaveGame(!gameOver ? 'Woah your opponent bailed' : '');
+        } else if (command.startsWith('START')) {
+            messageArea.textContent = command.substring(5);
         }
         else if(command.startsWith('YOU ')) {
             messageArea.textContent = command;

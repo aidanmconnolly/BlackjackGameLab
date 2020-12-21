@@ -127,36 +127,44 @@ class Game {
     }
 
 
-    move(hit, player) {
-        this.open = false;
-        console.log(hit);
-        if (this.turn !== player.mark) {
-            throw new Error('Not your turn');
-        } else if (this.players.length === 1) {
-            throw new Error('You don’t have an opponent yet');
+    move(hit, player, recursion) {
+        if(this.deck.length === 52 && recursion === false) {
+            this.open = false;
+            for(var i = 0; i < this.players.length; i++) {
+                this.players[i].send("START The game has started. Wait for your turn.");
+                this.move(1, this.players[i], true);
+                this.move(1, this.players[i], true);
+                console.log("mark: " + this.players[i].mark);
+                //this.players[i].showCards();
+            }
+            console.log("turn:" + this.turn);
         }
-
-        if (hit === 1) {
-            let num = this.deck.pop();
-            //console.log("Num: ", num);
-            //let suit = Math.floor(num / 13);
-            player.cardsPlayed.push(num);
-            num = Math.floor(num % 13) + 1;
-            if(num > 10) {
-                num = 10;
-                //console.log("NewNum: ", num);
+        else {
+            console.log(hit);
+            if(recursion === false) {
+                if (this.turn !== player.mark) {
+                    throw new Error('Not your turn. It is ' + this.players[this.turn].name + "'s turn.");
+                } else if (this.players.length === 1) {
+                    throw new Error('You don’t have an opponent yet');
+                }
             }
 
-            player.num += num;
-            player.showCards();
+            if (hit === 1) {
+                let num = this.deck.pop();
+                //console.log("Num: ", num);
+                //let suit = Math.floor(num / 13);
+                player.cardsPlayed.push(num);
+                num = Math.floor(num % 13) + 1;
+                if(num > 10) {
+                    num = 10;
+                    //console.log("NewNum: ", num);
+                }
+
+                player.num += num;
+                player.showCards();
+            }
+            console.log(player.num);
         }
-        //console.log(player.cardsPlayed)
-        console.log(player.num);
-        //if(hit === 0) {
-            //this.turn = (this.turn + 1) % this.players.length;
-            //this.currentPlayer = this.players[this.turn + 1];
-            //this.currentPlayer = this.currentPlayer.opponent;
-        //}
 
     }
 
@@ -219,7 +227,7 @@ class Player {
                 socket.close();
             } else if (command === "HIT") {
                 try {
-                    this.game.move(1, this);
+                    this.game.move(1, this, false);
                     //this.opponent.send(`OPPONENT_HIT`);
                     if (this.lost()) {
                         this.send(`MESSAGE BUST Your number is now ${this.num}. Wait for your opponent to play.`);
@@ -255,7 +263,7 @@ class Player {
                         this.whoWon();
                     }
                     else {
-                        this.game.move(0, this);
+                        this.game.move(0, this, false);
                         this.send(`MESSAGE Your number is now ${this.num}. Wait for your opponent to play.`);
                         this.game.turn = (this.game.turn+1)%this.game.players.length;
                         this.game.players[this.game.turn].send('MESSAGE Your move')
